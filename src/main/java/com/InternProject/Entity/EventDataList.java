@@ -1,5 +1,7 @@
 package com.InternProject.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,6 +16,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+
 
 public class EventDataList {
 
@@ -27,7 +32,6 @@ public class EventDataList {
     private String city_Name;
     private String date;
     private String time;
-
     private String weather;
     private Double distance;
 

@@ -11,6 +11,12 @@ public class EventDataService {
     @Autowired
     private EventDataRepository eventDataRepository;
 
+    @Autowired
+    private DistanceCalculatorService distanceCalculatorService;
+
+    @Autowired
+    private WeatherService weatherService;
+
     public EventDataList saveEventDataList(EventDataList eventDataList) {
         return eventDataRepository.save(eventDataList);
     }

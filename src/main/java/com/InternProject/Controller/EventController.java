@@ -1,11 +1,10 @@
 package com.InternProject.Controller;
 
-import com.InternProject.Entity.Event;
 import com.InternProject.Entity.EventDataList;
+import com.InternProject.Entity.PaginationResponse;
 import com.InternProject.Repository.EventDataRepository;
 import com.InternProject.Service.DistanceCalculatorService;
 import com.InternProject.Service.EventDataService;
-import com.InternProject.Service.EventService;
 import com.InternProject.Service.WeatherService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,10 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
+@RequestMapping("/events")
 public class EventController {
 
     @Autowired
@@ -26,61 +29,60 @@ public class EventController {
     private WeatherService weatherService;
 
     @Autowired
-    private EventService eventService;
-
-    @Autowired
     private EventDataRepository eventDataRepository;
 
     @Autowired
     private EventDataService eventDataService;
 
-    @PostMapping("/add")
-    public ResponseEntity<EventDataList> addEvents(@RequestBody EventDataList eventDataList){
+    @PostMapping("/addEvent")
+    public ResponseEntity<EventDataList> addEventToDB(@RequestBody EventDataList eventDataList){
         EventDataList createdEvents = eventDataService.saveEventDataList(eventDataList);
         return new ResponseEntity<>(createdEvents, HttpStatus.CREATED);
     }
 
 
-    @PostMapping("/addEvents")
-    public ResponseEntity<Event> addEvents(@RequestBody Event event){
-        Event createdEvents = eventService.addEventToDB(event);
-        return new ResponseEntity<>(createdEvents, HttpStatus.CREATED);
-    }
+    @GetMapping("/find")
+    public PaginationResponse<EventDataList> getEventData(@RequestParam double latitude, @RequestParam double longitude,
+                                                          @RequestParam String searchDate, @RequestParam(defaultValue = "1") int page,
+                                                          @RequestParam(defaultValue = "10") int pageSize) {
 
-    @GetMapping("/event")
-    public EventDataList getEventData(@RequestParam double userSourceLatitude, @RequestParam double userSourceLongitude,
-                                      @RequestParam String searchDate ) {
+        List<EventDataList> eventDataList = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(searchDate, formatter);
 
-        // Calculate distance using user's source latitude and longitude
-        String distanceApiResponse = distanceCalculatorService.calculateDistance(userSourceLatitude, userSourceLongitude);
-        Double distance = extractDistanceFromApiResponse(distanceApiResponse);
+        // Calculate total number of items and starting index for pagination
+        int totalItems = 15; // Assuming always fetching data for next 15 days
+        int totalEvents = totalItems; // You can replace this with the actual total number of events
+        int totalPages = (int) Math.ceil((double) totalEvents / pageSize);
+        int startIndex = (page - 1) * pageSize;
 
-        String cityNameByDate = weatherService.getCityNameByDate(searchDate);
-        System.out.println(cityNameByDate);
+        for (int i = startIndex; i < totalItems && i < startIndex + pageSize; i++) {
+            LocalDate currentDate = startDate.plusDays(i);
+            String currentDateString = currentDate.format(formatter);
 
-        String EventName = weatherService.getEventName(searchDate);
-        System.out.println(EventName);
+            String cityNameByDate = weatherService.getCityNameByDate(currentDateString);
 
-        String weatherApiResponse = weatherService.getWeather( cityNameByDate , searchDate);
-        String weather = extractWeatherFromApiResponse(weatherApiResponse);
+            String eventName = weatherService.getEventName(currentDateString);
 
+            String weatherApiResponse = weatherService.getWeather(cityNameByDate, currentDateString);
+            String weather = extractWeatherFromApiResponse(weatherApiResponse);
 
+            // Calculate distance using user's source latitude and longitude
+            String distanceApiResponse = distanceCalculatorService.calculateDistance(latitude, longitude);
+            Double distance = extractDistanceFromApiResponse(distanceApiResponse);
 
-        // Create and return Event object with combined data
-        EventDataList list = new EventDataList();
-        list.setEvent_Name(EventName);
-        list.setCity_Name(cityNameByDate);
-        list.setDate(searchDate);
-        list.setWeather(weather);
-        list.setDistance(distance);
+            // Create and add EventDataList object to the list
+            EventDataList eventData = new EventDataList();
+            eventData.setEvent_Name(eventName);
+            eventData.setCity_Name(cityNameByDate);
+            eventData.setDate(currentDateString);
+            eventData.setWeather(weather);
+            eventData.setDistance(distance);
 
-//        Event event = new Event();
-//        event.setDate(searchDate);
-//        event.setWeather(weather);
-//        event.setDistance(distance);
+            eventDataList.add(eventData);
+        }
 
-        //return event;
-        return  list;
+        return new PaginationResponse<>(eventDataList, page, pageSize, totalEvents, totalPages);
     }
 
     private Double extractDistanceFromApiResponse(String distanceApiResponse) {
@@ -108,4 +110,6 @@ public class EventController {
             return null;
         }
     }
+
+
 }
