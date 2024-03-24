@@ -22,58 +22,71 @@ import java.util.List;
 @RequestMapping("/events")
 public class EventController {
 
+    // Injecting DistanceCalculatorService for calculating distances
     @Autowired
     private DistanceCalculatorService distanceCalculatorService;
 
+    // Injecting WeatherService for retrieving weather data
     @Autowired
     private WeatherService weatherService;
 
+    // Injecting EventDataRepository to perform create or find the details from database
     @Autowired
     private EventDataRepository eventDataRepository;
 
+    // Inject EventDataService for handling logic related to event data list (database)
     @Autowired
     private EventDataService eventDataService;
 
+
     @PostMapping("/addEvent")
-    public ResponseEntity<EventDataList> addEventToDB(@RequestBody EventDataList eventDataList){
+    public ResponseEntity<EventDataList> addEventToDB(@RequestBody EventDataList eventDataList) {
+        // Saving event data list using EventDataService
         EventDataList createdEvents = eventDataService.saveEventDataList(eventDataList);
+        // Returning created event data list with status code
         return new ResponseEntity<>(createdEvents, HttpStatus.CREATED);
     }
 
 
+
+    // as per the requirement taking three input(latitude,longitude & searchDate ) to perform the operation and return the desire value means list from the database(event list data)
     @GetMapping("/find")
     public PaginationResponse<EventDataList> getEventData(@RequestParam double latitude, @RequestParam double longitude,
                                                           @RequestParam String searchDate, @RequestParam(defaultValue = "1") int page,
                                                           @RequestParam(defaultValue = "10") int pageSize) {
-
+        // logic for searching date starting to end
         List<EventDataList> eventDataList = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate startDate = LocalDate.parse(searchDate, formatter);
 
-        // Calculate total number of items and starting index for pagination
+        // logic to Calculate total number of items and starting index for pagination
         int totalItems = 15; // Assuming always fetching data for next 15 days
-        int totalEvents = totalItems; // You can replace this with the actual total number of events
-        int totalPages = (int) Math.ceil((double) totalEvents / pageSize);
-        int startIndex = (page - 1) * pageSize;
+        int totalEvents = totalItems; // This will replace with the actual total number of events
+        int totalPages = (int) Math.ceil((double) totalEvents / pageSize); // basically logic of number of pages
+        int startIndex = (page - 1) * pageSize; // staring page
 
+        // for number of days date wise
         for (int i = startIndex; i < totalItems && i < startIndex + pageSize; i++) {
             LocalDate currentDate = startDate.plusDays(i);
             String currentDateString = currentDate.format(formatter);
 
+            // getting city name by date from database
             String cityNameByDate = weatherService.getCityNameByDate(currentDateString);
 
-            String eventName = weatherService.getEventName(currentDateString);
+            // getting event name by date from database
+            String eventNameByDate = weatherService.getEventName(currentDateString);
 
+            // getting weather details this is coming from external api that is given in the assignment
             String weatherApiResponse = weatherService.getWeather(cityNameByDate, currentDateString);
             String weather = extractWeatherFromApiResponse(weatherApiResponse);
 
-            // Calculate distance using user's source latitude and longitude
+            // Calculate distance using user's source latitude and longitude this is coming from external api that is given in the assignment
             String distanceApiResponse = distanceCalculatorService.calculateDistance(latitude, longitude);
             Double distance = extractDistanceFromApiResponse(distanceApiResponse);
 
-            // Create and add EventDataList object to the list
+            // creating event data and returning
             EventDataList eventData = new EventDataList();
-            eventData.setEvent_Name(eventName);
+            eventData.setEvent_Name(eventNameByDate);
             eventData.setCity_Name(cityNameByDate);
             eventData.setDate(currentDateString);
             eventData.setWeather(weather);
@@ -85,6 +98,7 @@ public class EventController {
         return new PaginationResponse<>(eventDataList, page, pageSize, totalEvents, totalPages);
     }
 
+    //logic for extracting data from external distance api basically extracting data value from json
     private Double extractDistanceFromApiResponse(String distanceApiResponse) {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -99,6 +113,7 @@ public class EventController {
     }
 
 
+    //logic for extracting data from external weather api basically extracting data value from json
     private String extractWeatherFromApiResponse(String weatherApiResponse) {
         try {
             ObjectMapper mapper = new ObjectMapper();

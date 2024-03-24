@@ -20,6 +20,8 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 
+// this is entity as per the details
+
 public class EventDataList {
 
     @Id
