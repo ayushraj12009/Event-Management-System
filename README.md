@@ -48,6 +48,7 @@ Parameter (If you know distance or weather details then fill other wise don't fi
 
 
   GET-> http://localhost:8080/events/find?latitude=38.33354302&longitude=157.9579286&searchDate=2024-07-20
+  
  -> Copy this url and paste in postman value automatically added then change para,s value
 
 
