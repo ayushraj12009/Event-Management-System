@@ -19,6 +19,7 @@ Created RESTful service that manages event data based on a user's geographical l
 
 
 ## Here are the APIs you can test using Swagger or Postman:
+
 ![Uploading image.png…]()
 
 
