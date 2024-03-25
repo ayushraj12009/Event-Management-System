@@ -59,4 +59,9 @@ Parameter (If you know distance or weather details then fill other wise don't fi
 | `date`        | `string` | 2024-03-01
 
 
+### Technology Stack:
+## Java Spring Boot:
+- RESTful API Development: Java Spring Boot provides a robust framework for building RESTful APIs quickly and efficiently. It offers features like Spring Web MVC, which simplifies the development of API endpoints.
+- Dependency Injection: Spring Boot's dependency injection mechanism allows for easy integration with external APIs and services.
+- Spring Data: Spring Data provides convenient abstractions for data access, making it easier to work with databases.
 
