@@ -6,6 +6,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class DistanceCalculatorService {
 
+    // logic for handling external api to get the value of distance
     public String calculateDistance(double latitude, double longitude) {
         String apiUrl = "https://gg-backend-assignment.azurewebsites.net/api/Distance?code=IAKvV2EvJa6Z6dEIUqqd7yGAu7IZ8gaH-a0QO6btjRc1AzFu8Y3IcQ=="
                 + "&latitude1=40.7128"

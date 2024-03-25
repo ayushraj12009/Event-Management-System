@@ -14,6 +14,7 @@ public class WeatherService {
     @Autowired
     private EventDataRepository eventDataRepository;
 
+    // logic for handling external api to get the value of weather
         public String getWeather(String cityName, String date) {
 
         String apiUrl = "https://gg-backend-assignment.azurewebsites.net/api/Weather?code=KfQnTWHJbg1giyB_Q9Ih3Xu3L9QOBDTuU5zwqVikZepCAzFut3rqsg=="
@@ -25,6 +26,7 @@ public class WeatherService {
 
     }
 
+    // logic for getting city name for database
     public String getCityNameByDate(String date) {
 
         List<EventDataList> eventDataList = eventDataRepository.findByDate(date);
@@ -37,9 +39,9 @@ public class WeatherService {
         }
     }
 
+    // logic for getting event name for database
     public String getEventName(String date) {
         List<EventDataList> eventDataList = eventDataRepository.findByDate(date);
-
         if (eventDataList.isEmpty()) {
             return "Event Name is not found for the given date.";
         } else {

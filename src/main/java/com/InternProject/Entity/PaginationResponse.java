@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 
+// this is for the details of pagination in postman
 public class PaginationResponse<T> {
     private List<T> events;
     private int page;

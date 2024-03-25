@@ -49,6 +49,8 @@ public class EventController {
 
 
 
+
+
     // as per the requirement taking three input(latitude,longitude & searchDate ) to perform the operation and return the desire value means list from the database(event list data)
     @GetMapping("/find")
     public PaginationResponse<EventDataList> getEventData(@RequestParam double latitude, @RequestParam double longitude,

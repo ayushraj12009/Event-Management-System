@@ -17,6 +17,7 @@ public class EventDataService {
     @Autowired
     private WeatherService weatherService;
 
+    // logic for adding data to DB
     public EventDataList saveEventDataList(EventDataList eventDataList) {
         return eventDataRepository.save(eventDataList);
     }
