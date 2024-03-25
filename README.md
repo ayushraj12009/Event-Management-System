@@ -27,9 +27,9 @@ Created RESTful service that manages event data based on a user's geographical l
 
 #### Add Event In DB
 
-```http
+
   POST-> http://localhost:8080/events/addEvent
-```
+
 
 Parameter (If you know distance or weather details then fill other wise don't fill)
 
@@ -46,10 +46,10 @@ Parameter (If you know distance or weather details then fill other wise don't fi
 
 #### Find Details From DB
 
-```http
+
   GET-> http://localhost:8080/events/find?latitude=38.33354302&longitude=157.9579286&searchDate=2024-07-20
  -> Copy this url and paste in postman value automatically added then change para,s value
-```
+
 
 | Parameter | Type     | Temp Data                       
 | :-------- | :------- | :-------------------------------- 
