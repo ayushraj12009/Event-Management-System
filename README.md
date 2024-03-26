@@ -76,4 +76,5 @@ Parameter (If you know distance or weather details then fill other wise don't fi
 - The third challenge was that I inadvertently converted the date into a string, which made it difficult to show data for the next 15 days. To fix this, I had to come up with several ideas and try them out until I found a solution that worked.
 
 ### Project Demo
+
 [### Challenges](https://bit.ly/43G3FbS)https://bit.ly/43G3FbS
