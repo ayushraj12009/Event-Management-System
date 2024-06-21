@@ -70,6 +70,3 @@ Parameter (If you know distance or weather details then fill other wise don't fi
 - The next challenge arose when I couldn't extract JSON data properly within the Spring Boot framework. I encountered issues with detecting dependencies, particularly with ObjectMapper. Despite numerous attempts and injecting multiple dependencies with different versions, I couldn't resolve it initially. However, eventually, I managed to overcome this hurdle by carefully installing the required dependencies and successfully utilized ObjectMapper in the project.
 - The third challenge was that I inadvertently converted the date into a string, which made it difficult to show data for the next 15 days. To fix this, I had to come up with several ideas and try them out until I found a solution that worked.
 
-### Project Demo
-
-https://bit.ly/43G3FbS
