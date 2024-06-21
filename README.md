@@ -5,11 +5,6 @@ Created RESTful service that manages event data based on a user's geographical l
 
 
 ## How To Run Project:
-
-
-```bash
-  https://github.com/ayushraj12009/apiwizAssignment.git
-```
     - Clone this repository to your local machine.
     - Wait a few minutes to install all dependencies.
     - Create a database in MySQL, then paste the database name in the application.properties file. You can choose any name.
